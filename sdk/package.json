@@ -1,0 +1,36 @@
+{
+  "name": "@hyperboredao/bridge-sdk",
+  "version": "0.1.0",
+  "description": "SDK for interacting with the Hyperbore Bridge",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "jest",
+    "lint": "eslint src --ext .ts"
+  },
+  "keywords": [
+    "solana",
+    "bridge",
+    "evm",
+    "hyperbore"
+  ],
+  "dependencies": {
+    "@coral-xyz/anchor": "^0.31.0",
+    "@solana/spl-token": "^0.4.13",
+    "@solana/web3.js": "^1.89.1",
+    "bn.js": "^5.2.1"
+  },
+  "peerDependencies": {
+    "@coral-xyz/anchor": "^0.31.0",
+    "@solana/web3.js": "^1.89.1"
+  },
+  "devDependencies": {
+    "@types/bn.js": "^5.1.0",
+    "@types/jest": "^29.5.12",
+    "eslint": "^8.57.0",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.1.2",
+    "typescript": "^5.7.3"
+  }
+}

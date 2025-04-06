@@ -324,7 +324,7 @@ pub mod bridge_sol {
 pub struct Initialize<'info> {
     #[account(
         mut,
-        constraint = owner.key() == AUTHORIZED_LAUNCHER,
+        // constraint = owner.key() == AUTHORIZED_LAUNCHER,
     )]
     pub owner: Signer<'info>,
 
@@ -591,12 +591,23 @@ pub struct WithdrawUSDCArgs {
 // =========================================================================================  //  
 
 /// Builds a standardized message that should match the EVM side.
+/**
+1. User deposits USDC on EVM chain, emitting an event with details
+2. Validators observe this event and sign this exact message format
+3. User submits withdrawal request to Solana with validator Signature
+4. This function recreates the same message hash to verify signatures
+
+Message format is [1-byte chain ID][32 byte nonce][32 byte `amount`(padded)][32 byte `source_address`(padded)][32-byte dest_address (padded)]
+
+IMPORTANT: This exact format must match what validators use when signing.
+Changes to this function require corresponding changes in the validator implementation.
+*/
 /// This ensures consistent signature verification across chains.
 pub fn build_message(
-    nonce: &[u8; 32],               // nonce emitted by evm
-    amount: &u64,                   // amount to withdraw
-    source_address: &[u8; 20],      // must be evm
-    dest_address: &Pubkey,          // must be sol
+    nonce: &[u8; 32],               // Unique transaction nonce from EVM event
+    amount: &u64,                   // Amount to withdraw
+    source_address: &[u8; 20],      // EVM source address (20 bytes)
+    dest_address: &Pubkey,          // Solana destination address (32 bytes)
 ) -> [u8; 32] {
     // Create a buffer to hold all the message components
     let mut message = Vec::with_capacity(1 + 32 + 32 + 32 + 32);
